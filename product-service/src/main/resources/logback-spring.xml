@@ -1,6 +1,6 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
-
+    <springProfile name="!test">
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <destination>${LOGSTASH_HOST}</destination>
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
@@ -28,4 +28,5 @@
     <root level="INFO">
         <appender-ref ref="LOGSTASH"/>
     </root>
+</springProfile>
 </configuration>

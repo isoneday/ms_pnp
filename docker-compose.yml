@@ -1,6 +1,31 @@
 
 services:
 
+  app:
+    build: ./frontend-larave
+    container_name: frontend-larave
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./frontend-larave/:/var/www
+    ports:
+      - "8000:9000"
+    networks:
+      - microservices-net
+
+  nginx:
+    image: nginx:latest
+    container_name: laravel-nginx
+    ports:
+      - "8091:80"
+    volumes:
+      - ./frontend-larave:/var/www
+      - ./frontend-larave/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - microservices-net
+
   api-gateway:
     build: ./api-gateway
     container_name: api-gateway
