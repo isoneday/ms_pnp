@@ -1,15 +1,27 @@
 
 services:
 
-  app:
-    build: ./frontend-larave
-    container_name: frontend-larave
+  frontend-produk:
+    build: ./frontend-produk
+    container_name: frontend-produk
     restart: unless-stopped
     working_dir: /var/www
     volumes:
-      - ./frontend-larave/:/var/www
+      - ./frontend-produk/:/var/www
     ports:
-      - "8000:9000"
+      - "8001:9000"
+    networks:
+      - microservices-net
+
+  frontend-customer:
+    build: ./frontend-customer
+    container_name: frontend-customer
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./frontend-customer/:/var/www
+    ports:
+      - "8004:9000"
     networks:
       - microservices-net
 
@@ -19,10 +31,12 @@ services:
     ports:
       - "8091:80"
     volumes:
-      - ./frontend-larave:/var/www
-      - ./frontend-larave/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./frontend-produk:/var/www/frontend-produk
+      - ./frontend-customer:/var/www/frontend-customer
     depends_on:
-      - app
+      - frontend-produk
+      - frontend-customer
     networks:
       - microservices-net
 
