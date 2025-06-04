@@ -97,6 +97,21 @@ services:
     networks:
       - microservices-net
 
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "8087:8087"
+    environment:
+      - spring.datasource.url=jdbc:mysql://mysql:3306/dbecommerce_auth?useSSL=false&serverTimezone=UTC
+      - spring.datasource.username=root
+      - spring.datasource.password=root_password
+      - eureka.client.service-url.defaultZone=http://eurekaserver:8761/eureka/
+    depends_on:
+      - eurekaserver
+      - mysql
+    networks:
+      - microservices-net
   product-service:
     build: ./product-service
     container_name: product-service
