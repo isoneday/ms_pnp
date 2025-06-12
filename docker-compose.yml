@@ -25,6 +25,18 @@ services:
     networks:
       - microservices-net
 
+  frontend-auth:
+    build: ./frontend-auth
+    container_name: frontend-auth
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./frontend-auth/:/var/www
+    ports:
+      - "8002:9000"
+    networks:
+      - microservices-net
+
   frontend-customer:
     build: ./frontend-customer
     container_name: frontend-customer
@@ -46,6 +58,7 @@ services:
       - ./nginx-gateway/nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - frontend-main
+      - frontend-auth
       - frontend-produk
       - frontend-customer
     networks:
@@ -60,6 +73,16 @@ services:
       - ./frontend-main/nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - frontend-main
+    networks:
+      - microservices-net
+  nginx-auth:
+    image: nginx:latest
+    container_name: nginx-auth
+    volumes:
+      - ./frontend-auth:/var/www
+      - ./frontend-auth/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend-auth
     networks:
       - microservices-net
   nginx-produk:
